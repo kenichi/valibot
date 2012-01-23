@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script src="http://localhost:3000/_valibot/valibot.js"></script>
+    <!--
+    <script src="../js/valibot.js"></script>
+    -->
+    <script>
+
+      var vi, vn, vs, vsh;
+
+      $(document).ready(function() {
+
+        // normal, single-model, form boringness
+        vi = new Valibot({
+          formId:    'ichi',
+          appUrl:    'http://localhost:3000',
+          modelName: 'foo',
+          confirm:   [{'password_ichi': 'Passwords'},
+          {email:    'Emails'}]
+        });
+
+        /* ajaxy, dual-model fun!
+         * note: exclude takes a map, won't hit submit action until $('agree') is checked,
+         *       even though different formId, `confirm` and `agree` still take unique DOM ids
+         */
+        vn = new Valibot({
+          formId:     'ni',
+          appUrl:     'http://localhost:3000',
+          pathPrefix: '/some/other/prefix',
+          modelNames: ['bar', 'bat'],
+          confirm:    [{'password_ni': 'Passwordz'}],
+          agreements: [{'agree': 'Terms'}],
+          exclude:    {'bar': ['bad'], 'bat': ['ban']},
+
+          // do the following for ajaxy forms
+          submitForm:       false,
+          onSubmitCallback: function(valibot) {
+
+            // then do your ajaxy stuff here
+            var params = $(valibot.form).serialize();
+            params[_method] = 'POST';
+            $.post('/bars_and_bats', params, function(response) {
+              // do something with response
+            });
+          }
+        });
+
+        // note the separate form, context, confirm ids
+        vs = new Valibot({
+          formId:     'san',
+          appUrl:     'http://localhost:3000',
+          context:    'schnitzel',
+          modelNames: ['bat', 'foo'],
+          confirm:    [{'password_san': 'Passworths'}, {'email_san': 'Emailth'}]
+        });
+
+        // radio buttons!
+        vsh = new Valibot({
+          formId:    'shi',
+          appUrl:     'http://localhost:3000',
+          modelName: 'foo'
+        });
+
+      });
+
+    </script>
+  </head>
+  <body>
+
+    <form id="ichi">
+      test: <input type="text" name="foo[bar]"/><br/>
+      <br/>
+      p: <input type="password" name="foo[password]" id="password_ichi"/><br/>
+      cp: <input type="password" id="confirm_password_ichi"/><br/>
+      <br/>
+      e: <input type="text" name="foo[email]" id="email_ichi"/><br/>
+      ce: <input type="text" id="confirm_email_ichi"/><br/>
+      <br/>
+      <input type="submit"/>
+    </form>
+
+    <hr/>
+
+    <form id="ni">
+      test bar: <input type="text" name="bar[baz]"/><br/>
+      test bat: <input type="text" name="bat[bam]"/><br/>
+      test excluded bar: <input type="text" name="bar[bad]"/><br/>
+      test excluded bat: <input type="text" name="bat[ban]"/><br/>
+      <br/>
+      p: <input type="password" name="bar[password]" id="password_ni"/><br/>
+      cp: <input type="password" id="confirm_password_ni"/><br/>
+      <br/>
+      agree: <input type="checkbox" id="agree"/><br/>
+      <br/>
+      <input type="submit"/>
+    </form>
+
+    <hr/>
+
+    <form id="san">
+      test: <input type="text" name="foo[bar]"/><br/>
+      <br/>
+      p: <input type="password" name="bat[password]" id="password_san"/><br/>
+      cp: <input type="password" id="confirm_password_san"/><br/>
+      <br/>
+      e: <input type="text" name="email" id="email_san"/><br/>
+      ce: <input type="text" id="confirm_email_san"/><br/>
+      <br/>
+      <input type="submit"/>
+    </form>
+
+    <form id="shi">
+      test:<br/>
+      <label>nothing: <input type="radio" name="foo[bar]" value=""/></label><br/>
+      <label>somethin: <input type="radio" name="foo[bar]" value="somethin"/></label><br/>
+      <label>0000: <input type="radio" name="foo[bar]" value="0000"/></label><br/>
+      <br/>
+      <input type="submit"/>
+    </form>
+    
+  </body>
+</html>
