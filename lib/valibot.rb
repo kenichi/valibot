@@ -1,4 +1,4 @@
-# valibot.rb (c) 2011 kenichi nakamura (kenichi.nakamura@gmail.com)
+# valibot.rb (c) 2012 kenichi nakamura (kenichi.nakamura@gmail.com)
 # 
 # easy automatic form field validation against datamapper models behind a sinatra app.
 # this is the helper module and Sinatra app class.
