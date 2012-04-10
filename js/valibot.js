@@ -47,6 +47,7 @@ function Valibot(opts) {
   this.bindOnSubmit =        true;
   this.submitForm =          true;
   this.onSubmitCallback =    null;
+  this.onInvalidCallback =   null;
   this.agreements =          [];
   this.agreepeeohs =         [];
   this.formId =              '';
@@ -55,6 +56,7 @@ function Valibot(opts) {
   this.radiomatons =         [];
 
   if (opts != null) {
+
     if (opts.fancy != null && opts.fancy) {
       this.errorTagPlacer =      this._fancyErrorTagPlacer;
       this.errorTagRemover =     this._fancyErrorTagRemover;
@@ -73,6 +75,7 @@ function Valibot(opts) {
     if (opts.bindOnSubmit != null)          this.bindOnSubmit =        opts.bindOnSubmit;
     if (opts.submitForm != null)            this.submitForm =          opts.submitForm;
     if (opts.onSubmitCallback != null)      this.onSubmitCallback =    opts.onSubmitCallback;
+    if (opts.onInvalidCallback != null)     this.onInvalidCallback =    opts.onInvalidCallback;
     if (opts.agreements != null)            this.agreements =          opts.agreements;
     if (opts.formId != null)                this.formId =              '#' + opts.formId + ' ';
     if (opts.appUrl != null)                this.appUrl =              opts.appUrl;
@@ -188,6 +191,8 @@ Valibot.prototype = {
         var _this = this;
         $(this.invalids).each(function(i, bad){ bad.checkValue(null, function(valid) { _this.onSubmitCheckCallback(bad); }); });
         $(this.unchecked()).each(function(i, uc){ uc.checkValue(null, function(valid) { _this.onSubmitCheckCallback(uc); }); });
+		
+		
       } else {
         if (this.submitForm) {
           this.form.submit();
@@ -203,6 +208,7 @@ Valibot.prototype = {
       if (this.checking.length == 0) {
         if (!this.allValid()) {
           this.invalids[0].tag.focus();
+		  this.onInvalid();
         } else {
           if (this.submitForm) {
             this.form.submit();
@@ -212,6 +218,13 @@ Valibot.prototype = {
         }
       }
     },
+	
+  onInvalid:
+	function() {
+		if( typeof this.onInvalidCallback === 'function' ) {
+		 	this.onInvalidCallback(this);
+		}
+	},
 
   // never called by Valibot or its minions, but left here for utility.
   all:
