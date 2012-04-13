@@ -216,6 +216,18 @@ set this to a function you want to run when the form would be submitted.  if you
 
 ---
 
+####onInvalidCallback : function(valibot)
+set this to a function you want to run when the form has been submitted but returns as invalid. ex:
+
+	var valibot = new Valibot({ 
+		modelName: 'foo',
+		onInvalidCallback: function(valibot) {
+			// do something when the form submission is invalid
+		}
+	});
+
+---
+
 ####appUrl : string
 perhaps you want to run Valibot at a different URL completely from the one that the form your validating loaded from.  fine, just tell Valibot about it with this.  note that this puts Valibot into JSONP mode and all validation requests turn from POSTs into GETs. ex:
 
